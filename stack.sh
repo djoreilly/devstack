@@ -1396,8 +1396,8 @@ if is_service_enabled quantum; then
     fi
     if is_service_enabled q-svc && [[ "$Q_PLUGIN" = "openvswitch" ]]; then
         add_nova_opt "libvirt_vif_type=ethernet"
-        add_nova_opt "libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtOpenVswitchDriver"
-        add_nova_opt "linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver"
+        add_nova_opt "libvirt_vif_driver=quantum.plugins.ovs2.nova.libvirt_vif.LibvirtOVSDriver"
+        add_nova_opt "linuxnet_interface_driver=quantum.plugins.ovs2.nova.linux_net.LinuxOvsIfaceDriver"
         add_nova_opt "quantum_use_dhcp=True"
     fi
 else
