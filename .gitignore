@@ -2,5 +2,4 @@ proto
 *~
 *.log
 src
-localrc
 local.sh

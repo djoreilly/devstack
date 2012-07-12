@@ -908,6 +908,9 @@ if is_service_enabled g-reg; then
     iniset $GLANCE_API_PASTE_INI filter:authtoken admin_password $SERVICE_PASSWORD
 fi
 
+kernel_version=`cat /proc/version | cut -d " " -f3`
+install_package openvswitch-switch openvswitch-datapath-dkms linux-headers-$kernel_version
+
 # Quantum
 # -------
 
@@ -1383,6 +1386,13 @@ add_nova_opt "dhcpbridge_flagfile=$NOVA_CONF_DIR/$NOVA_CONF"
 add_nova_opt "fixed_range=$FIXED_RANGE"
 add_nova_opt "s3_host=$SERVICE_HOST"
 add_nova_opt "s3_port=$S3_SERVICE_PORT"
+
+add_nova_opt "network_manager=nova.network.quantum.manager.QuantumManager"
+add_nova_opt "libvirt_vif_type=ethernet"
+add_nova_opt "libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtOpenVswitchDriver"
+add_nova_opt "linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver"
+add_nova_opt "quantum_use_dhcp=True"
+
 if is_service_enabled quantum; then
     add_nova_opt "network_manager=nova.network.quantum.manager.QuantumManager"
     add_nova_opt "quantum_connection_host=$Q_HOST"
@@ -1401,7 +1411,12 @@ if is_service_enabled quantum; then
         add_nova_opt "quantum_use_dhcp=True"
     fi
 else
-    add_nova_opt "network_manager=nova.network.manager.$NET_MAN"
+    #add_nova_opt "network_manager=nova.network.manager.$NET_MAN"
+    add_nova_opt "network_manager=nova.network.quantum.manager.QuantumManager"
+    add_nova_opt "libvirt_vif_type=ethernet"
+    add_nova_opt "libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtOpenVswitchDriver"
+    add_nova_opt "linuxnet_interface_driver=nova.network.linux_net.LinuxOVSInterfaceDriver"
+    add_nova_opt "quantum_use_dhcp=True"
 fi
 if is_service_enabled n-vol; then
     add_nova_opt "volume_group=$VOLUME_GROUP"
